@@ -4,6 +4,7 @@ import bannereffectthings.event.ShieldItemTickCallback;
 import bannereffectthings.event.ShieldUseCallback;
 import bannereffectthings.handler.EnchantedGolderAppleShieldHandler;
 import bannereffectthings.handler.ShieldItemHandler;
+import bannereffectthings.handler.SkullShieldHandler;
 import net.fabricmc.api.ModInitializer;
 
 import org.slf4j.Logger;
@@ -21,6 +22,7 @@ public class BannerEffectThings implements ModInitializer {
 	public void onInitialize() {
 		ShieldItemHandler handler = new ShieldItemHandler();
 		handler.add(new EnchantedGolderAppleShieldHandler());
+		handler.add(new SkullShieldHandler());
 		ShieldItemTickCallback.HAND.register(handler);
 		ShieldItemTickCallback.TICK.register(handler);
 		ShieldUseCallback.EVENT.register(handler);
