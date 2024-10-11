@@ -7,11 +7,12 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 
 public class SkullShieldHandler implements ShieldItemTickCallback.ShieldItemHandTickCallback, ConditionalHandler{
     @Override
-    public void onShieldItemHandTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
+    public void onShieldItemHandTick(ItemStack stack, World world, Entity entity, Hand hand, int slot, boolean selected) {
         if (!(entity instanceof LivingEntity livingEntity))
             return;
         StatusEffectInstance e = livingEntity.getActiveStatusEffects().get(StatusEffects.SPEED);

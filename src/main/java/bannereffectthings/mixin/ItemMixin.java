@@ -1,8 +1,6 @@
 package bannereffectthings.mixin;
 
-import bannereffectthings.event.ShieldItemTickCallback;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;

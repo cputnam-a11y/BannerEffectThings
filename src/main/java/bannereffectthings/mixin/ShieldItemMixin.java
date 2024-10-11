@@ -26,8 +26,9 @@ public class ShieldItemMixin extends ItemMixin {
     @Override
     protected void inventoryTick$Inject$HEAD(ItemStack stack, World world, Entity entity, int slot, boolean selected, CallbackInfo ci) {
         if (entity instanceof LivingEntity entity1) {
-            if (entity1.getMainHandStack() == stack || entity1.getOffHandStack() == stack) {
-                ShieldItemTickCallback.HAND.invoker().onShieldItemHandTick(stack, world, entity, slot, selected);
+            boolean mainHand;
+            if ((mainHand = entity1.getMainHandStack() == stack) || entity1.getOffHandStack() == stack) {
+                ShieldItemTickCallback.HAND.invoker().onShieldItemHandTick(stack, world, entity, mainHand ? Hand.MAIN_HAND : Hand.OFF_HAND, slot, selected);
             }
         }
         ShieldItemTickCallback.TICK.invoker().onShieldItemInventoryTick(stack, world, entity, slot, selected);

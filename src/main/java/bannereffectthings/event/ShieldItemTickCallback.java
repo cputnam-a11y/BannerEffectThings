@@ -4,6 +4,7 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 
 public class ShieldItemTickCallback {
@@ -16,9 +17,9 @@ public class ShieldItemTickCallback {
             });
     public static final Event<ShieldItemHandTickCallback> HAND = EventFactory.createArrayBacked(
             ShieldItemHandTickCallback.class,
-            (listeners) -> (ItemStack stack, World world, Entity entity, int slot, boolean selected) -> {
+            (listeners) -> (ItemStack stack, World world, Entity entity, Hand hand,  int slot, boolean selected) -> {
                 for (final var listener : listeners) {
-                    listener.onShieldItemHandTick(stack, world, entity, slot, selected);
+                    listener.onShieldItemHandTick(stack, world, entity, hand,  slot, selected);
                 }
             });
     @FunctionalInterface
@@ -27,6 +28,6 @@ public class ShieldItemTickCallback {
     }
 
     public interface ShieldItemHandTickCallback {
-        void onShieldItemHandTick(ItemStack stack, World world, Entity entity, int slot, boolean selected);
+        void onShieldItemHandTick(ItemStack stack, World world, Entity entity, Hand hand, int slot, boolean selected);
     }
 }

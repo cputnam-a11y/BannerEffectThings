@@ -2,14 +2,12 @@ package bannereffectthings.handler;
 
 import bannereffectthings.event.ShieldItemTickCallback;
 import bannereffectthings.util.BannerPatternHelper;
-import net.minecraft.block.entity.BannerPattern;
-import net.minecraft.block.entity.BannerPatterns;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 
 public class EnchantedGolderAppleShieldHandler implements ShieldItemTickCallback.ShieldItemHandTickCallback, ConditionalHandler {
@@ -18,7 +16,7 @@ public class EnchantedGolderAppleShieldHandler implements ShieldItemTickCallback
     }
 
     @Override
-    public void onShieldItemHandTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
+    public void onShieldItemHandTick(ItemStack stack, World world, Entity entity, Hand hand, int slot, boolean selected) {
         if (!(entity instanceof LivingEntity livingEntity))
             return;
         StatusEffectInstance e = livingEntity.getActiveStatusEffects().get(StatusEffects.REGENERATION);

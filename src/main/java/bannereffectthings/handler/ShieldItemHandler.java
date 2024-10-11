@@ -9,59 +9,59 @@ import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-public class ShieldItemHandler implements ShieldItemTickCallback.ShieldItemInventoryTickCallback, ShieldItemTickCallback.ShieldItemHandTickCallback, ShieldUseCallback {
-    List<ShieldItemTickCallback.ShieldItemHandTickCallback> handCallbacks = new ArrayList<>();
-    List<ShieldItemTickCallback.ShieldItemInventoryTickCallback> inventoryCallbacks = new ArrayList<>();
-    HashMap<ShieldUseCallback, Boolean> useCallbacks = new HashMap<>();
+import static bannereffectthings.event.ShieldItemTickCallback.*;
+
+public class ShieldItemHandler implements ShieldItemInventoryTickCallback, ShieldItemHandTickCallback, ShieldUseCallback {
+    final List<ShieldItemHandTickCallback> handCallbacks = new ArrayList<>();
+    final List<ShieldItemInventoryTickCallback> inventoryCallbacks = new ArrayList<>();
+    final List<ShieldUseCallback> useCallbacks = new ArrayList<>();
 
     @Override
-    public void onShieldItemHandTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
+    public void onShieldItemHandTick(ItemStack stack, World world, Entity entity, Hand hand, int slot, boolean selected) {
         for (final var handCallback : handCallbacks) {
-            if (handCallback instanceof ConditionalHandler ch) {
-                if (ch.shouldApply(stack, handCallback.getClass())) {
-                    handCallback.onShieldItemHandTick(stack, world, entity, slot, selected);
-                }
-                continue;
-            }
-            handCallback.onShieldItemHandTick(stack, world, entity, slot, selected);
+            ConditionalHandler.maybeApply(
+                    (Handler)handCallback,
+                    stack,
+                    ShieldItemHandTickCallback.class,
+                    () -> handCallback.onShieldItemHandTick(stack, world, entity, hand, slot, selected)
+            );
         }
     }
 
     @Override
     public void onShieldItemInventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
         for (final var inventoryCallback : inventoryCallbacks) {
-            if (inventoryCallback instanceof ConditionalHandler ch) {
-                if (ch.shouldApply(stack, inventoryCallback.getClass())) {
-                    inventoryCallback.onShieldItemInventoryTick(stack, world, entity, slot, selected);
-                }
-                continue;
-            }
-            inventoryCallback.onShieldItemInventoryTick(stack, world, entity, slot, selected);
+            ConditionalHandler.maybeApply(
+                    (Handler)inventoryCallback,
+                    stack,
+                    ShieldItemInventoryTickCallback.class,
+                    () -> inventoryCallback.onShieldItemInventoryTick(stack, world, entity, slot, selected)
+            );
         }
     }
 
     @Override
     public void onShieldUse(World world, PlayerEntity user, Hand hand) {
-        for (final var entry : useCallbacks.entrySet()) {
-            if (entry.getKey() instanceof ConditionalHandler ch) {
-                if (ch.shouldApply(user.getStackInHand(hand), entry.getKey().getClass())) {
-                    entry.getKey().onShieldUse(world, user, hand);
-                }
-                continue;
-            }
-            entry.getKey().onShieldUse(world, user, hand);
+        for (final var useCallback : useCallbacks) {
+            ConditionalHandler.maybeApply(
+                    (Handler)useCallback,
+                    user.getStackInHand(hand),
+                    ShieldUseCallback.class,
+                    () -> useCallback.onShieldUse(world, user, hand)
+            );
         }
     }
-    public void add(ShieldUseCallback callback) {
-        useCallbacks.put(callback, true);
-    }
-    public void add(ShieldItemTickCallback.ShieldItemHandTickCallback callback) {
-        handCallbacks.add(callback);
-    }
-    public void add(ShieldItemTickCallback.ShieldItemInventoryTickCallback callback) {
-        inventoryCallbacks.add(callback);
+    public void add(Handler callback) {
+        if (callback instanceof ShieldItemTickCallback.ShieldItemHandTickCallback handCallback) {
+            handCallbacks.add(handCallback);
+        }
+        if (callback instanceof ShieldItemTickCallback.ShieldItemInventoryTickCallback inventoryCallback) {
+            inventoryCallbacks.add(inventoryCallback);
+        }
+        if (callback instanceof ShieldUseCallback useCallback) {
+            useCallbacks.add(useCallback);
+        }
     }
 }
