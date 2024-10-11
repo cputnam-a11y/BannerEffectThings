@@ -1,6 +1,7 @@
 package bannereffectthings.handler;
 
 import bannereffectthings.event.ShieldItemTickCallback;
+import bannereffectthings.handler.base.ConditionalHandler;
 import bannereffectthings.util.BannerPatternHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;

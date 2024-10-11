@@ -3,6 +3,8 @@
   "package": "bannereffectthings.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "CreeperAccessor",
+    "EntityAccessor",
     "ExampleMixin",
     "ItemMixin",
     "ShieldItemMixin"

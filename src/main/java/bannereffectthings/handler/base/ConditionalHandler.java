@@ -1,4 +1,4 @@
-package bannereffectthings.handler;
+package bannereffectthings.handler.base;
 
 import net.minecraft.item.ItemStack;
 

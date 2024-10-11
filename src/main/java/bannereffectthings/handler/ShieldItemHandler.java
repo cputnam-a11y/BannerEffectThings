@@ -2,6 +2,8 @@ package bannereffectthings.handler;
 
 import bannereffectthings.event.ShieldItemTickCallback;
 import bannereffectthings.event.ShieldUseCallback;
+import bannereffectthings.handler.base.ConditionalHandler;
+import bannereffectthings.handler.base.Handler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
