@@ -1,5 +1,6 @@
 package bannereffectthings.event;
 
+import bannereffectthings.handler.base.Handler;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
@@ -8,7 +9,7 @@ import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
 
 @FunctionalInterface
-public interface AfterDeathWithShieldCallback extends ServerLivingEntityEvents.AfterDeath {
+public interface AfterDeathWithShieldCallback extends ServerLivingEntityEvents.AfterDeath, Handler {
     @Override
     default void afterDeath(LivingEntity entity, DamageSource damageSource) {
         boolean main;
