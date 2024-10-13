@@ -6,6 +6,7 @@
     "CreeperAccessor",
     "EntityAccessor",
     "ExampleMixin",
+    "ExplosionMixin",
     "ItemMixin",
     "ShieldItemMixin"
   ],

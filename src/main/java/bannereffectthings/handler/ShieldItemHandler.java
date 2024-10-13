@@ -1,10 +1,13 @@
 package bannereffectthings.handler;
 
+import bannereffectthings.event.AfterDeathWithShieldCallback;
 import bannereffectthings.event.ShieldItemTickCallback;
 import bannereffectthings.event.ShieldUseCallback;
 import bannereffectthings.handler.base.ConditionalHandler;
 import bannereffectthings.handler.base.Handler;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
@@ -15,11 +18,11 @@ import java.util.List;
 
 import static bannereffectthings.event.ShieldItemTickCallback.*;
 
-public class ShieldItemHandler implements ShieldItemInventoryTickCallback, ShieldItemHandTickCallback, ShieldUseCallback {
+public class ShieldItemHandler implements ShieldItemInventoryTickCallback, ShieldItemHandTickCallback, ShieldUseCallback, AfterDeathWithShieldCallback {
     final List<ShieldItemHandTickCallback> handCallbacks = new ArrayList<>();
     final List<ShieldItemInventoryTickCallback> inventoryCallbacks = new ArrayList<>();
     final List<ShieldUseCallback> useCallbacks = new ArrayList<>();
-
+    final List<AfterDeathWithShieldCallback> afterDeathWithShieldCallbacks = new ArrayList<>();
     @Override
     public void onShieldItemHandTick(ItemStack stack, World world, Entity entity, Hand hand, int slot, boolean selected) {
         for (final var handCallback : handCallbacks) {
@@ -64,6 +67,21 @@ public class ShieldItemHandler implements ShieldItemInventoryTickCallback, Shiel
         }
         if (callback instanceof ShieldUseCallback useCallback) {
             useCallbacks.add(useCallback);
+        }
+        if (callback instanceof AfterDeathWithShieldCallback afterDeathWithShieldCallback) {
+            afterDeathWithShieldCallbacks.add(afterDeathWithShieldCallback);
+        }
+    }
+
+    @Override
+    public void afterDeathWithShield(LivingEntity entity, DamageSource damageSource, Hand hand, ItemStack shield) {
+        for (final var afterDeathWithShieldCallback : afterDeathWithShieldCallbacks) {
+            ConditionalHandler.maybeApply(
+                    (Handler)afterDeathWithShieldCallback,
+                    shield,
+                    AfterDeathWithShieldCallback.class,
+                    () -> afterDeathWithShieldCallback.afterDeathWithShield(entity, damageSource, hand, shield)
+            );
         }
     }
 }

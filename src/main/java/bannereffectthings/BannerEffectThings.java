@@ -34,22 +34,6 @@ public class BannerEffectThings implements ModInitializer {
 		ShieldItemTickCallback.HAND.register(handler);
 		ShieldItemTickCallback.TICK.register(handler);
 		ShieldUseCallback.EVENT.register(handler);
-		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
-			ItemStack mainHandStack = entity.getMainHandStack();
-			ItemStack offHandStack = entity.getOffHandStack();
-			if (!(mainHandStack.isOf(Items.SHIELD) || offHandStack.isOf(Items.SHIELD))) {
-				return;
-			}
-			if (!(BannerPatternHelper.hasSkull(mainHandStack) || BannerPatternHelper.hasSkull(offHandStack))) {
-				return;
-			}
-			entity.getWorld().createExplosion(
-					entity,
-					entity.getX(), entity.getY(), entity.getZ(),
-					4f,
-					true,
-					World.ExplosionSourceType.MOB
-			);
-		});
+		ServerLivingEntityEvents.AFTER_DEATH.register(handler);
 	}
 }
