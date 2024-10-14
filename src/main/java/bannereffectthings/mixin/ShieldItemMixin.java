@@ -1,20 +1,26 @@
 package bannereffectthings.mixin;
 
 import bannereffectthings.event.ShieldItemTickCallback;
+import bannereffectthings.event.ShieldItemTooltipCallback;
 import bannereffectthings.event.ShieldUseCallback;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ShieldItem;
+import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.List;
 
 @Mixin(ShieldItem.class)
 public class ShieldItemMixin extends ItemMixin {
@@ -32,5 +38,9 @@ public class ShieldItemMixin extends ItemMixin {
             }
         }
         ShieldItemTickCallback.TICK.invoker().onShieldItemInventoryTick(stack, world, entity, slot, selected);
+    }
+    @Inject(method = "appendTooltip", at = @At("TAIL"))
+    private void appendTooltip$Inject$TAIL(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context, CallbackInfo ci) {
+        ShieldItemTooltipCallback.EVENT.invoker().onShieldItemTooltip(stack, world, context, tooltip);
     }
 }

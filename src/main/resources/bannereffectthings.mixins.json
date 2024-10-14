@@ -3,9 +3,11 @@
   "package": "bannereffectthings.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "EndTickMixin",
     "ItemMixin",
     "LivingEntityMixin",
-    "ShieldItemMixin"
+    "ShieldItemMixin",
+    "StartTickMixin"
   ],
   "injectors": {
     "defaultRequire": 1

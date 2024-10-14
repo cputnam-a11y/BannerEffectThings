@@ -1,6 +1,5 @@
 package bannereffectthings.handler;
 
-import bannereffectthings.BannerEffectThings;
 import bannereffectthings.entity.ModEntityTypes;
 import bannereffectthings.entity.ShieldExplodeEntity;
 import bannereffectthings.event.AfterDeathWithShieldCallback;
@@ -8,6 +7,7 @@ import bannereffectthings.event.ShieldActionUseCallback;
 import bannereffectthings.handler.base.ConditionalHandler;
 import bannereffectthings.network.ActionUsePacket;
 import bannereffectthings.util.BannerPatternHelper;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -20,6 +20,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -32,7 +33,7 @@ import net.minecraft.world.explosion.ExplosionBehavior;
 
 import static bannereffectthings.event.ShieldItemTickCallback.*;
 
-public class SkullShieldHandler implements ShieldItemHandTickCallback, ShieldActionUseCallback, AfterDeathWithShieldCallback, ConditionalHandler {
+public class SkullShieldHandler implements ShieldItemHandTickCallback, ShieldActionUseCallback, AfterDeathWithShieldCallback, ConditionalHandler, ServerTickEvents.EndTick {
     @Override
     public void onShieldItemHandTick(ItemStack stack, World world, Entity entity, Hand hand, int slot, boolean selected) {
         if (!(entity instanceof LivingEntity livingEntity))
@@ -109,5 +110,10 @@ public class SkullShieldHandler implements ShieldItemHandTickCallback, ShieldAct
         entity.setPitch(user.getPitch());
         entity.setYaw(user.getYaw());
         world.spawnEntity(entity);
+    }
+
+    @Override
+    public void onEndTick(MinecraftServer server) {
+
     }
 }

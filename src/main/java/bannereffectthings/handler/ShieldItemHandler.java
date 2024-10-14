@@ -7,11 +7,13 @@ import bannereffectthings.event.ShieldUseCallback;
 import bannereffectthings.handler.base.ConditionalHandler;
 import bannereffectthings.handler.base.Handler;
 import bannereffectthings.network.ActionUsePacket;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 
@@ -26,13 +28,17 @@ public class ShieldItemHandler implements
         ShieldUseCallback,
         AfterDeathWithShieldCallback,
         ShieldActionUseCallback,
-        ShieldItemUsageTickCallback {
+        ShieldItemUsageTickCallback,
+        ServerTickEvents.EndTick,
+        ServerTickEvents.StartTick{
     final List<ShieldItemHandTickCallback> handCallbacks = new ArrayList<>();
     final List<ShieldItemInventoryTickCallback> inventoryCallbacks = new ArrayList<>();
     final List<ShieldUseCallback> useCallbacks = new ArrayList<>();
     final List<AfterDeathWithShieldCallback> afterDeathWithShieldCallbacks = new ArrayList<>();
     final List<ShieldActionUseCallback> actionUseCallbacks = new ArrayList<>();
     final List<ShieldItemUsageTickCallback> usageTickCallbacks = new ArrayList<>();
+    final List<ServerTickEvents.EndTick> endTickCallbacks = new ArrayList<>();
+    final List<ServerTickEvents.StartTick> startTickCallbacks = new ArrayList<>();
 
     public void add(Handler callback) {
         if (callback instanceof ShieldItemTickCallback.ShieldItemHandTickCallback handCallback) {
@@ -52,6 +58,12 @@ public class ShieldItemHandler implements
         }
         if (callback instanceof ShieldItemUsageTickCallback usageTickCallback) {
             usageTickCallbacks.add(usageTickCallback);
+        }
+        if (callback instanceof ServerTickEvents.EndTick endTickCallback) {
+            endTickCallbacks.add(endTickCallback);
+        }
+        if (callback instanceof ServerTickEvents.StartTick startTickCallback) {
+            startTickCallbacks.add(startTickCallback);
         }
     }
 
@@ -124,6 +136,20 @@ public class ShieldItemHandler implements
                     ShieldItemUsageTickCallback.class,
                     () -> usageTickCallback.onShieldItemUsageTick(world, user, stack, remainingUseTicks)
             );
+        }
+    }
+
+    @Override
+    public void onEndTick(MinecraftServer server) {
+        for (final var endTickCallback : endTickCallbacks) {
+            endTickCallback.onEndTick(server);
+        }
+    }
+
+    @Override
+    public void onStartTick(MinecraftServer server) {
+        for (final var startTickCallback : startTickCallbacks) {
+            startTickCallback.onStartTick(server);
         }
     }
 }
